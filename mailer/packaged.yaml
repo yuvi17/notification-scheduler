@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'mailer
+
+  Sample SAM Template for mailer
+
+  '
+Globals:
+  Function:
+    Timeout: 3
+Resources:
+  ExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action: sts:AssumeRole
+      Path: /
+      Policies:
+      - PolicyName: sendEmails
+        PolicyDocument:
+          Statement:
+            Effect: Allow
+            Action:
+            - ses:SendEmail
+            - ses:SendRawEmail
+            Resource: '*'
+  MailerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://cloudformation-stacks-test/ff5aa8a3f6d931c3c913e2998d8ac16c
+      Handler: app.lambda_handler
+      Runtime: python3.7
+      Events:
+        SendMail:
+          Type: Api
+          Properties:
+            Path: /send
+            Method: post
+Outputs:
+  HelloWorldApi:
+    Description: API Gateway endpoint URL for Prod stage for Hello World function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/send_mail/
+  MailerFunction:
+    Description: Mailer Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - MailerFunction
+      - Arn
