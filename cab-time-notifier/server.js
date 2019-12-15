@@ -6,15 +6,27 @@ const app = express();
 const axios = require('axios');
 const AWS = require('aws-sdk');
 const dotenv = require('dotenv');
+const fs = require('fs')
 const stepfunctions = new AWS.StepFunctions({region: 'us-east-1'});
 
 app.use(express.static(path.join(__dirname, 'build')));
 app.use(bodyParser.json({ extended: true }));
 app.use(cors());
 dotenv.config({path: '.env.development.local'});
+var stream = fs.createWriteStream("log.txt", {flags:'a', encoding: 'utf8'});
+
+// log all requests to a file
+axios.interceptors.request.use(request => {
+  let options = Object.assign({}, request.params)
+  options['key'] = "XXXXXXXXXXXXXXXX"
+  const logData = JSON.stringify({url: request.url, params: options})
+  stream.write(logData + "\n")
+  return request
+})
 
 app.post('/when-to-book', function(req, res) {
   body = req.body
+  stream.write(JSON.stringify(body) + "\n")
   let arrivalTime = new Date(body['time']).getTime()
   arrivalTime = arrivalTime/1000
   body['arrivalTime']= arrivalTime
@@ -22,6 +34,13 @@ app.post('/when-to-book', function(req, res) {
 
   return res.send({
     response: "OK"
+  });
+});
+
+app.get('/logs', function(req, res){
+  var contents = fs.readFileSync('log.txt', 'utf8');
+  return res.send({
+    data: contents
   });
 });
 
