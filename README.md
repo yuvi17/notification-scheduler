@@ -3,7 +3,7 @@
 - Serverless Application that uses AWS Step Functions along with AWS Lambda and AWS SNS to send a email at a particular time.
 
 - Architecture:
- ![Architecture](https://drive.google.com/file/d/1SUgY4BwDQGmdXe1nogURnJVQRQL4uiGn/view?usp=sharing)
+ ![Architecture](./architecture.png)
 
 - Flow:
    - The client application (Cab Booking Site in this example) triggers the StepFunction using the following input format
