@@ -16,7 +16,7 @@ function App() {
       email: email,
       source: source,
       destination: destination,
-      time: time
+      time: new Date(time).toString
     });
   }
 
