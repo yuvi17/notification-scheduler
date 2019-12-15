@@ -32,20 +32,10 @@ Resources:
   MailerFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://cloudformation-stacks-test/ff5aa8a3f6d931c3c913e2998d8ac16c
+      CodeUri: s3://cloudformation-stacks-test/3c76c536f85403e0e21bd6c65f2ca395
       Handler: app.lambda_handler
       Runtime: python3.7
-      Events:
-        SendMail:
-          Type: Api
-          Properties:
-            Path: /send
-            Method: post
 Outputs:
-  HelloWorldApi:
-    Description: API Gateway endpoint URL for Prod stage for Hello World function
-    Value:
-      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/send_mail/
   MailerFunction:
     Description: Mailer Lambda Function ARN
     Value:

@@ -4,7 +4,8 @@ from botocore.exceptions import ClientError
 
 
 def lambda_handler(event, context):
-    body = json.loads(event['body'])
+    print(event)
+    body = event['body']
     
     send_email(body)
 
@@ -12,45 +13,18 @@ def lambda_handler(event, context):
         "statusCode": 200,
         "body": json.dumps({
             "message": "hello world",
-            # "location": ip.text.replace("\n", "")
         }),
     }
 
 # TODO: PICK THESE UP FROM ENV
 SENDER='kumaryuvraj118@gmail.com'
 
-# If necessary, replace us-west-2 with the AWS Region you're using for Amazon SES.
-AWS_REGION = "us-east-1"
+AWS_REGION = "us-east-1"        
 
-# The subject line for the email.
-SUBJECT = "Amazon SES Test (SDK for Python)"
-
-# The email body for recipients with non-HTML email clients.
-BODY_TEXT = ("Amazon SES Test (Python)\r\n"
-             "This email was sent with Amazon SES using the "
-             "AWS SDK for Python (Boto)."
-            )
-            
-# The HTML body of the email.
-BODY_HTML = """<html>
-<head></head>
-<body>
-  <h1>Amazon SES Test (SDK for Python)</h1>
-  <p>This email was sent with
-    <a href='https://aws.amazon.com/ses/'>Amazon SES</a> using the
-    <a href='https://aws.amazon.com/sdk-for-python/'>
-      AWS SDK for Python (Boto)</a>.</p>
-</body>
-</html>
-"""            
-
-# The character encoding for the email.
 CHARSET = "UTF-8"
 
 def send_email(options={}):
-# Create a new SES resource and specify a region.
-    print(options)
-    print(options['to'])
+    # Create a new SES resource and specify a region.
     client = boto3.client('ses',region_name=AWS_REGION)
 
     # Try to send the email.
