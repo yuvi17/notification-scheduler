@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: A template to create email scheduler state machine.
+Resources:
+  StatesExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - !Sub states.${AWS::Region}.amazonaws.com
+            Action: "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - PolicyName: StatesExecutionPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "lambda:InvokeFunction"
+                Resource: "*"
+  EmailScheduler:
+    Type: AWS::StepFunctions::StateMachine
+    Properties:
+      StateMachineName: EmailScheduler-StateMachine
+      DefinitionString: |-
+        {
+          "Comment": "Schedules an email to be sent at a future date",
+          "StartAt": "WaitForDueDate",
+          "States": {
+            "WaitForDueDate": {
+              "Type": "Wait",
+              "TimestampPath": "$.dueDate",
+              "Next": "SendEmail"
+            },
+            "SendEmail": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:us-east-1:452944682158:function:mailer-test-MailerFunction-PYMU2E71NI3R",
+              "End": true
+            }
+          }
+        }
+      RoleArn: !GetAtt [ StatesExecutionRole, Arn ]
