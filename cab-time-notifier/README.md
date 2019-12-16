@@ -1,9 +1,9 @@
 # CAB BOOKING TIME NOTIFIER
 
-# This is an example project using the `scheduled-notifications` service. 
+### This is an example project using the `scheduled-notifications` service. 
 
 
-# WORKING
+## WORKING
   - Hitting `/` opens up a page where user can get notified about when to leave to book a cab in order to reach his destination in time.
 
   - It asks the user for source coordinates, destination coordinates, his email (where he wants to be notified, NOT BEING STORED ANYWHERE) and the time by which he wishes to arrive at the destination.
@@ -63,11 +63,13 @@ Then open `localhost:8080`. The app will be served from here.
 # ENV Variables:
 
 Please add the following ENV variables in `.env.development.local` for local development
+
+```
 GOOGLE_MAPS_KEY=yourapikeyforgoogle
 STATE_MACHINE_ARN=yourstatemachine:deployment:arn
 AWS_ACCESS_KEY_ID=YOURAWSKEYS
 AWS_ACCESS_SECRET_KEY=YOURAWSKEYS
-
+```
 
 
 
