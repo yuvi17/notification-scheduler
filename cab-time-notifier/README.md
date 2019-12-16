@@ -1,6 +1,25 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# CAB BOOKING TIME NOTIFIER
 
-## Available Scripts
+# This is an example project using the `scheduled-notifications` service. 
+
+
+# WORKING
+  - Hitting `/` opens up a page where user can get notified about when to leave to book a cab in order to reach his destination in time.
+
+  - It asks the user for source coordinates, destination coordinates, his email (where he wants to be notified, NOT BEING STORED ANYWHERE) and the time by which he wishes to arrive at the destination.
+
+  - It then calls the Google Maps API and a simulated Uber API, which return the time needed to reach the destination at the provided time and the time it takes to book an UberGo respectively. All this takes places on the server side.
+
+  - Then the AWS StepFunction is triggered, with details to wait till the required time and then trigger an email to the address provided.
+
+  - Hitting `/logs` will give you a log of all the API calls made to Google Maps and Uber API.
+
+  - Currently the frontend and backend have error checks and the response will always be 200.
+
+
+## Below are deployment scripts
+
+## Working on the React App
 
 In the project directory, you can run:
 
@@ -25,44 +44,31 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.<br />
 Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+It will be deployed along with the node app on running `node server.js`. See below.
 
-### `yarn eject`
+## Working on Server Side
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+In the project directory, run
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## npm install
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+to install the dependencies.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## node server.js 
 
-## Learn More
+or `nodemon` or `pm2` or whatever is your preference.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Then open `localhost:8080`. The app will be served from here.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+# ENV Variables:
 
-### Code Splitting
+Please add the following ENV variables in `.env.development.local` for local development
+GOOGLE_MAPS_KEY=yourapikeyforgoogle
+STATE_MACHINE_ARN=yourstatemachine:deployment:arn
+AWS_ACCESS_KEY_ID=YOURAWSKEYS
+AWS_ACCESS_SECRET_KEY=YOURAWSKEYS
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
 
-### Analyzing the Bundle Size
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
 
-### Making a Progressive Web App
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
