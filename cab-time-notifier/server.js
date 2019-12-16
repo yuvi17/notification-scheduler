@@ -64,8 +64,6 @@ function notify_user(options) {
       .catch(function(err) {
         console.log(err)
       })
-
-    console.log(mail_options)
   }).catch((err) => {
     console.log(err)
   })
