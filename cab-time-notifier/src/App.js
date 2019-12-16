@@ -16,12 +16,14 @@ function App() {
       email: email,
       source: source,
       destination: destination,
-      time: new Date(time).toString
+      time: new Date(time).toISOString(),
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
     });
   }
 
 
   function postData(options) {
+    console.log(options)
     fetch('/when-to-book', {
       method: 'POST',
       body: JSON.stringify(options),

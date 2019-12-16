@@ -7,6 +7,7 @@ const axios = require('axios');
 const AWS = require('aws-sdk');
 const dotenv = require('dotenv');
 const fs = require('fs')
+const moment = require('moment-timezone')
 const stepfunctions = new AWS.StepFunctions({region: 'us-east-1'});
 
 app.use(express.static(path.join(__dirname, 'build')));
@@ -27,9 +28,10 @@ axios.interceptors.request.use(request => {
 app.post('/when-to-book', function(req, res) {
   body = req.body
   stream.write(JSON.stringify(body) + "\n")
-  let arrivalTime = new Date(body['time']).getTime()
-  arrivalTime = arrivalTime/1000
-  body['arrivalTime']= arrivalTime
+  console.log(body)
+  const arrivalDate = moment.tz(body['time'], body['timeZone'])
+  body['arrivalDate']= arrivalDate
+
   notify_user(body)
 
   return res.send({
@@ -50,7 +52,7 @@ function notify_user(options) {
   fetch_times(options).then(function(values) {
     const travel_time = parseInt(values[0].data.rows[0].elements[0].duration.value)
     const cab_time = parseInt(values[1].data.times[0].estimate)
-    const dueDate = options['arrivalTime'] - travel_time - cab_time
+    const dueDate = options['arrivalDate'].subtract(travel_time + cab_time, 'seconds')
     const destination_address = values[0].data.destination_addresses[0]
     const source_address = values[0].data.origin_addresses[0]
 
@@ -62,6 +64,8 @@ function notify_user(options) {
       .catch(function(err) {
         console.log(err)
       })
+
+    console.log(mail_options)
   }).catch((err) => {
     console.log(err)
   })
@@ -80,7 +84,7 @@ const travel_time = (options) => {
   params = {
     origins: options['source'],
     destinations: options['destination'],
-    arrival_time: options['arrivalTime'],
+    arrival_time: options['arrivalDate'].unix(),
     key: process.env.GOOGLE_MAPS_KEY // puts your key in ENV
   }
   return axios.get(url, {params: params})
@@ -108,9 +112,9 @@ const trigger_scheduler = (options) => {
 }
 
 function generate_mail_options(dueDate, destination_address, source_address, travel_time, cab_time, email) {
-  const leaveBy = new Date(dueDate*1000)
+  const leaveBy = dueDate.toString()
   return {
-    dueDate: new Date(dueDate*1000).toISOString(),
+    dueDate: dueDate.toISOString(),
     body: {
       to: email,
       subject: mail_subject(leaveBy),
@@ -144,5 +148,5 @@ app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
-app.listen(process.env.PORT || 8080);
+app.listen(process.env.PORT || 8888);
 
